@@ -9,7 +9,7 @@ class Calculator extends Component {
   state = {
     displayValue: '0',
     numbers: ['9', '8', '7', '6', '5', '4', '3', '2', '1', '.', '0', 'ce'],
-    operators: ['/', 'x', '-', '+'],
+    operators: ['/', 'x', '-', '+', 'n!'/*, 'mod', 'exp', 'log'*/],
     selectedOperator: '',
     storedValue: '',
   };
@@ -26,8 +26,8 @@ class Calculator extends Component {
     let { displayValue, selectedOperator, storedValue } = this.state;
     const updateStoredValue = displayValue;
 
-    displayValue = parseInt(displayValue, 10);
-    storedValue = parseInt(storedValue, 10);
+    displayValue = parseFloat(displayValue, 10);
+    storedValue = parseFloat(storedValue, 10);
 
     switch (selectedOperator) {
       case '+':
@@ -42,6 +42,14 @@ class Calculator extends Component {
       case '/':
         displayValue = storedValue / displayValue;
         break;
+      case 'n!':
+        displayValue = parseInt(storedValue);
+        if (displayValue === 0 || displayValue === 1)
+          displayValue = 1;
+        for (var i = displayValue - 1; i >= 1; i--) {
+          displayValue *= i;
+        }
+        break;
       default:
         displayValue = '0';
     }
@@ -51,6 +59,14 @@ class Calculator extends Component {
     if (displayValue === 'NaN' || displayValue === 'Infinity') displayValue = '0';
 
     this.setState({ displayValue, selectedOperator, storedValue: updateStoredValue });
+
+    switch (selectedOperator) {
+      case 'n!':
+        this.updateDisplay();
+        break;
+      default:
+        // Nothing
+    }
   };
 
   handleKeyPress = event => {
