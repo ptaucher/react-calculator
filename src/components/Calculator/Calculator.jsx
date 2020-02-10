@@ -9,7 +9,7 @@ class Calculator extends Component {
   state = {
     displayValue: '0',
     numbers: ['9', '8', '7', '6', '5', '4', '3', '2', '1', '.', '0', 'ce'],
-    operators: ['/', 'x', '-', '+'],
+    operators: ['/', 'x', '-', '+', '%', '!'],
     selectedOperator: '',
     storedValue: '',
   };
@@ -26,8 +26,8 @@ class Calculator extends Component {
     let { displayValue, selectedOperator, storedValue } = this.state;
     const updateStoredValue = displayValue;
 
-    displayValue = parseInt(displayValue, 10);
-    storedValue = parseInt(storedValue, 10);
+    displayValue = parseFloat(displayValue, 10);
+    storedValue = parseFloat(storedValue, 10);
 
     switch (selectedOperator) {
       case '+':
@@ -41,6 +41,17 @@ class Calculator extends Component {
         break;
       case '/':
         displayValue = storedValue / displayValue;
+        break;
+      case '%':
+        displayValue = storedValue % displayValue;
+        break;
+      case '!':
+        displayValue = parseInt(storedValue);
+        if (displayValue === 0 || displayValue === 1)
+          displayValue = 1;
+        for (let i = displayValue - 1; i >= 1; i--) {
+          displayValue *= i;
+        }
         break;
       default:
         displayValue = '0';
@@ -80,6 +91,11 @@ class Calculator extends Component {
     }
 
     this.setState({ displayValue, selectedOperator, storedValue });
+
+    if (selectedOperator === '!') {
+      this.updateDisplay(value);
+      // this.callOperator();
+    }
   };
 
   updateDisplay = value => {
